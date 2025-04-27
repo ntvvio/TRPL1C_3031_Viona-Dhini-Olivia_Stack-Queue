@@ -1,0 +1,107 @@
+class Queue<T> {
+  late List<T?> elemen;
+  int depan = 0, rear = -1;
+  int kapasitas = 50;
+  int ukuran = 0;
+
+  Queue() {
+    kapasitas = 50;
+    elemen = List<T?>.filled(kapasitas, null);
+  }
+
+  Queue.withSize(int ukuranMaks) {
+    kapasitas = ukuranMaks;
+    elemen = List<T?>.filled(kapasitas, null);
+  }
+
+  bool kosong() => ukuran == 0;
+
+  T lihatDepan() {
+    if (kosong()) throw Exception("Antrian kosong");
+    return elemen[depan]!;
+  }
+
+  T keluarkan() {
+    if (kosong()) throw Exception("Antrian kosong, tidak bisa mengeluarkan elemen");
+
+    T item = elemen[depan]!;
+    elemen[depan] = null;
+    depan = (depan + 1) % kapasitas;
+    ukuran--;
+
+    return item;
+  }
+
+  void masukkan(T item) {
+    if (penuh()) throw Exception("Antrian penuh, tidak bisa menambahkan elemen");
+
+    rear = (rear + 1) % kapasitas;
+    elemen[rear] = item;
+    ukuran++;
+  }
+
+  int ukuranAntrian() => ukuran;
+
+  bool penuh() => ukuran == kapasitas;
+
+  void cetakAntrian() {
+    if (kosong()) {
+      print("Antrian kosong");
+      return;
+    }
+
+    print("Isi antrian:");
+    int hitung = 0;
+    int indeks = depan;
+
+    while (hitung < ukuran) {
+      print("Elemen di posisi $indeks: ${elemen[indeks]}");
+      indeks = (indeks + 1) % kapasitas;
+      hitung++;
+    }
+  }
+}
+
+void main() {
+  Queue<int> q = Queue<int>.withSize(5);
+
+  print("Menambahkan elemen ke antrian:");
+  try {
+    for (var item in [6, 16, 12, 66]) {
+      q.masukkan(item);
+      print("Ditambahkan: $item");
+    }
+  } catch (e) {
+    print("Kesalahan: $e");
+  }
+
+  q.cetakAntrian();
+
+  print("\nElemen di depan: ${q.lihatDepan()}");
+  print("Ukuran antrian: ${q.ukuranAntrian()}");
+
+  print("\nMengeluarkan elemen:");
+  try {
+    for (int i = 0; i < 2; i++) {
+      print("Dikeluarkan: ${q.keluarkan()}");
+    }
+  } catch (e) {
+    print("Kesalahan: $e");
+  }
+
+  print("\nAntrian setelah elemen dikeluarkan:");
+  q.cetakAntrian();
+
+  print("\nMenambahkan elemen baru setelah elemen dikeluarkan:");
+  try {
+    for (var item in [56, 70]) {
+      q.masukkan(item);
+      print("Ditambahkan: $item");
+    }
+  } catch (e) {
+    print("Kesalahan: $e");
+  }
+
+  print("\nAntrian akhir:");
+  q.cetakAntrian();
+}
