@@ -1,0 +1,51 @@
+import 'dart:io';
+
+class ConversionStack<T> {
+  final List<T> _stack = [];
+
+  void push(T element) => _stack.add(element);
+
+  T pop() => _stack.isEmpty
+      ? throw StateError("Tidak ada elemen dalam stack")
+      : _stack.removeLast();
+
+  bool isEmpty() => _stack.isEmpty;
+}
+
+class Desimal {
+  String convert(int decimal, int base, {String chars = "0123456789ABCDEF"}) {
+    if (decimal == 0) return "0";
+
+    var stack = ConversionStack<String>();
+    while (decimal > 0) {
+      int remainder = decimal % base;
+      stack.push(chars[remainder]);
+      decimal ~/= base;
+    }
+
+    var result = "";
+    while (!stack.isEmpty()) {
+      result += stack.pop();
+    }
+
+    return result;
+  }
+}
+
+void main() {
+  var converter = Desimal();
+
+  stdout.write("Masukkan nilai desimal = ");
+  String? input = stdin.readLineSync();
+
+  if (input == null || input.isEmpty || int.tryParse(input) == null) {
+    print("Input tidak valid. Harap masukkan angka desimal.");
+    return;
+  }
+
+  int decimal = int.parse(input);
+
+  print("Hasil nilai biner = ${converter.convert(decimal, 2)}");
+  print("Hasil nilai oktal = ${converter.convert(decimal, 8)}");
+  print("Hasil nilai heksadesimal = ${converter.convert(decimal, 16)}");
+}
